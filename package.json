@@ -1,0 +1,27 @@
+{
+  "name": "fcc-leah-carr-nightlife",
+  "version": "1.0.1",
+  "description": "fcc Nightlife Coordination App challenge https://www.freecodecamp.org/challenges/build-a-nightlife-coordination-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attributeofextension/nightlife-coordination.git"
+  },
+  "keywords": [
+    "fcc",
+    "nightlife"
+  ],
+  "author": "Leah Carr",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/attributeofextension/nightlife-coordination/issues"
+  },
+  "homepage": "https://github.com/attributeofextension/nightlife-coordination#readme",
+  "dependencies": {
+    "express": "4.16.2"
+  }
+}
