@@ -152,7 +152,12 @@ app.post("/locate",function(req,res) {
         
         
 });
-app.post("/going", passport.authenticate('twitter')); 
+app.post("/going", function(req,res) {
+    if(!req.user) {
+        res.redirect('/auth/twitter');
+    }
+    
+}); 
 app.get('/auth/twitter', passport.authenticate('twitter'));
 
 app.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/',failureRedirect: '/' }),
