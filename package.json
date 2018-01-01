@@ -36,5 +36,8 @@
     "request": "2.83.0",
     "yelp": "1.0.2",
     "yelp-fusion": "2.0.3"
+  },
+  "engines": {
+    "node": "4.1.2"
   }
 }
