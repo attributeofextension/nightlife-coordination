@@ -79,7 +79,19 @@ app.set('view engine','handlebars');
 
 
 //PASSPORT STRATEGIES===========================================================
+const TwitterStrategy = require('passport-twitter').Strategy;
 
+passport.use(new TwitterStrategy({
+    consumerKey: "qDwLSDftpM509cQ2LyAsn5Ofp",
+    consumerSecret: "Pq31UISUu4xjVhVo1baomgeg0psJruskhlFqT3FElEvPSJYQ3p",
+    callbackURL: "http://127.0.0.1:3000/auth/twitter/callback"
+  },
+  function(token, tokenSecret, profile, cb) {
+    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
 
 
 //ROUTING=======================================================================
@@ -91,7 +103,6 @@ app.use(express.static('public'));
                     console.log("Error looking up businesses by location: " + err);
                     throw err;
                 }
-                console.log(businesses);
                 res.render("home",{'businesses':businesses});
             });
         } else {
@@ -99,7 +110,7 @@ app.use(express.static('public'));
         }
     });
     
-  app.post("/locate",function(req,res) {
+app.post("/locate",function(req,res) {
         
         req.session.location = req.body.location;  
         
@@ -140,19 +151,15 @@ app.use(express.static('public'));
         });
         
         
-  });
-  app.post("/going", function(req,res) {
-         
-        
-  });
+});
+app.post("/going", passport.authenticate('twitter')); 
+app.get('/auth/twitter', passport.authenticate('twitter'));
 
-
-
-
-
-
-
-
+app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/auth/twitter' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+});
 //PORT==========================================================================
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
