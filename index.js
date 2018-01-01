@@ -155,7 +155,7 @@ app.post("/locate",function(req,res) {
 app.post("/going", passport.authenticate('twitter')); 
 app.get('/auth/twitter', passport.authenticate('twitter'));
 
-app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }),
+app.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/',failureRedirect: '/' }),
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');
