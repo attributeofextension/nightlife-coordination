@@ -29,5 +29,21 @@ body {
     height : 200px;
 }
 .card {
-    margin-bottom: 5px;
+    background-color: #D8C99B;
+}
+.card-block {
+    height: 100px;
+}
+a {
+    color: #BD632F;
+}
+a:hover {
+    color: #D8973C;
+    text-decoration: none;
+}
+#signature {
+    font-size : 10px;
+}
+#signature p {
+    margin : 5px 0px 5px 0px;
 }

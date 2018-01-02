@@ -6,13 +6,13 @@
   <div class="card">
     <img class="card-img-top" src="{{img_url}}" alt="Card image cap">
     <div class="card-block">
-      <h4 class="card-title">{{name}}</h4>
+      <h4 class="card-title"><a href="{{url}}" target="_blank">{{name}}</a></h4>
       <p class="card-text">Rating: {{rating}}</p>
     </div>  
     <div class="card-footer">
       <form method="post" action="/going" enctype="application/x-www-form-urlencoded">
-      <input type="hidden" name="venue" value="{{name}}">
-      <button type="submit" name="going" class="btn btn-primary">{{rsvp.length}} Going</a>
+      <input type="hidden" name="venue" value="{{id}}">
+      <button type="submit" name="going" class="btn searchBtn">{{rsvp.length}} Going</a>
       </form>
     </div>
   </div>
