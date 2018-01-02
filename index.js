@@ -18,6 +18,7 @@ var userSchema = new mongoose.Schema({
 	name:String,
 	email:String,
 	password: String,
+	twitterId: String
 },{collection:'users'});
 var User = mongoose.model("User",userSchema);
 //Businesses
@@ -68,7 +69,7 @@ passport.serializeUser(function(user, done) {
 });
 passport.deserializeUser(function(id,done) {
   User.findById(id, function(err,user) {
-    done(err,user);
+    done(null,user);
   });
 });
 //
@@ -87,8 +88,26 @@ passport.use(new TwitterStrategy({
     callbackURL: 'https://fcc-leah-carr-nightlife-app.herokuapp.com/auth/twitter/callback'
   },
   function(token, tokenSecret, profile, cb) {
-    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
-      return cb(err, user);
+
+    User.findOne({ twitterId: profile.id }, function (err, user) {
+      if(err) {
+        console.log("Error findin Twitter User: " + err);
+        throw err;
+      }
+        if(user) {
+            return cb(null, user);
+        } else {
+        var newUser = new User();
+        newUser.twitterId = profile.id;
+
+        newUser.save(function(err){
+           if(err) {
+                console.log("Error saving Twitter User: " + err); 
+                throw err;
+           }
+           return cb(null,newUser);
+        });
+    }
     });
   }
 ));
@@ -121,7 +140,7 @@ app.post("/locate",function(req,res) {
             } 
             if(businesses.length < 1) {
                 yelpClient.search({
-                    categories:'Nightlife',
+                    categories:'bars, All',
                     location: req.session.location
                 }).then(response => {
                     for(var i = 0; i < response.jsonBody.businesses.length; i++) {
@@ -154,13 +173,43 @@ app.post("/locate",function(req,res) {
 });
 app.post("/going", function(req,res) {
     if(!req.user) {
-        res.redirect('/auth/twitter');
+        res.redirect("/auth/twitter");
+    } else {
+        console.log(req.body.venue);
+        Business.findOne({'id':req.body.venue},function(err,business) {
+            if(err) {
+                console.log("Error finding Business: " + err);
+                throw err;
+            }
+            console.log(business);
+            if(business) {
+                var rsvpIndex = -1;
+                for(var i = 0; i < business.rsvp.length; i++ ){
+                    if( business.rsvp[i] == req.user._id ) {
+                        rsvpIndex = i;
+                    }
+                }
+                if(rsvpIndex >= 0) {
+                    business.rsvp.splice(rsvpIndex,1);
+                } else {
+                    business.rsvp.push(req.user._id);
+                }
+                business.save(function(err) {
+                    if(err) {
+                        console.log("Error saving Business: " + err);
+                        throw err;
+                    }
+                    res.redirect('/');
+                });
+            } else {
+                res.redirect('/');
+            }
+        });
     }
-    
 }); 
-app.get('/auth/twitter', passport.authenticate('twitter'));
 
-app.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/',failureRedirect: '/' }),
+app.get("/auth/twitter", passport.authenticate('twitter'));
+app.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }),
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');

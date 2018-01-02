@@ -29,5 +29,8 @@ body {
     height : 200px;
 }
 .card {
-    margin-bottom: 5px;
+    background-color: #D8C99B;
+}
+.card-block {
+    height: 100px;
 }
